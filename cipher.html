@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>FIELD CIPHER TERMINAL | FULL ALPHANUMERIC SCRAMBLE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #03060b;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.8rem;
+      font-family: 'Consolas', 'Monaco', 'Courier New', 'SF Mono', monospace;
+    }
+
+    /* MILITARY / TACTICAL INTERFACE - NO DECORATIONS */
+    .cipher-terminal {
+      max-width: 1000px;
+      width: 100%;
+      background: #0a0f16;
+      border: 1px solid #2a3a4a;
+      box-shadow: 0 0 0 1px rgba(0, 180, 180, 0.2), 0 20px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    /* TOP STATUS BAR */
+    .status-bar {
+      background: #03070c;
+      padding: 0.6rem 1.2rem;
+      border-bottom: 1px solid #1f3a44;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    .cipher-id {
+      color: #6e8b9e;
+      font-weight: 500;
+      text-transform: uppercase;
+      background: #0f151d;
+      padding: 0.2rem 0.6rem;
+      border-left: 3px solid #3c7f8c;
+      font-family: monospace;
+    }
+
+    .mode-badge {
+      color: #7bb3b3;
+      font-family: monospace;
+      background: #0e131c;
+      padding: 0.2rem 0.6rem;
+    }
+
+    /* CONTROL GRID - SHIFT KEY AS TEXT INPUT */
+    .control-grid {
+      padding: 1.6rem 1.8rem;
+      background: #0c111a;
+      border-bottom: 1px solid #1e2e38;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      align-items: flex-end;
+    }
+
+    .shift-module {
+      flex: 2;
+      min-width: 240px;
+    }
+
+    .shift-module .param-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #7f9fae;
+      letter-spacing: 1px;
+      margin-bottom: 0.45rem;
+      display: block;
+    }
+
+    .shift-entry {
+      display: flex;
+      align-items: center;
+      background: #050a10;
+      border: 1px solid #2c4552;
+      padding: 0.2rem 0.2rem 0.2rem 1rem;
+    }
+
+    .shift-entry input {
+      background: transparent;
+      border: none;
+      color: #dcf5ff;
+      font-size: 1.2rem;
+      font-weight: 500;
+      font-family: 'Consolas', monospace;
+      width: 100%;
+      text-align: left;
+      padding: 0.65rem 0;
+      letter-spacing: 0.3px;
+    }
+
+    .shift-entry input:focus {
+      outline: none;
+      border-bottom: 1px solid #3f9faf;
+    }
+
+    .shift-hint {
+      font-size: 0.6rem;
+      color: #5c7e8a;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    .action-module {
+      flex: 1.2;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      background: #0f1820;
+      border: 1px solid #2e5566;
+      padding: 0.55rem 1.2rem;
+      font-family: 'Consolas', monospace;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #cbe5f0;
+      cursor: pointer;
+      transition: all 0.08s linear;
+    }
+
+    .action-btn.primary {
+      background: #1c3f4a;
+      border-color: #459bb0;
+      color: #ffffff;
+      box-shadow: 0 0 3px rgba(69, 155, 176, 0.3);
+    }
+
+    .action-btn.primary:hover {
+      background: #235f6e;
+      border-color: #7ac7db;
+    }
+
+    .action-btn:hover {
+      background: #1b2e3b;
+      border-color: #4d8aa0;
+    }
+
+    /* IO PANEL */
+    .io-panel {
+      padding: 1.6rem 1.8rem 1.8rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .field-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #6e8f9c;
+      letter-spacing: 1px;
+      font-family: monospace;
+      border-left: 2px solid #3c7b8a;
+      padding-left: 8px;
+    }
+
+    .field-input {
+      background: #04080f;
+      border: 1px solid #253e48;
+      padding: 0.9rem 1.2rem;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9rem;
+      color: #dcf0fa;
+      resize: vertical;
+      width: 100%;
+      line-height: 1.45;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: #3b8f9f;
+      box-shadow: 0 0 0 1px rgba(59, 143, 159, 0.3);
+    }
+
+    .result-display {
+      background: #04080f;
+      border: 1px solid #2a4a58;
+      padding: 0.9rem 1.2rem;
+      min-height: 110px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.9rem;
+      color: #bde1f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      word-wrap: break-word;
+    }
+
+    /* FOOTER SPECS */
+    .cipher-specs {
+      background: #050a10;
+      border-top: 1px solid #1a333e;
+      padding: 0.7rem 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.65rem;
+      font-family: monospace;
+      color: #5e7e8c;
+    }
+
+    .spec-item {
+      letter-spacing: 0.3px;
+    }
+
+    button {
+      user-select: none;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    @media (max-width: 700px) {
+      .control-grid {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .action-module {
+        justify-content: stretch;
+      }
+      .action-btn {
+        text-align: center;
+        flex: 1;
+      }
+      body {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cipher-terminal">
+  <div class="status-bar">
+    <div class="cipher-id">FIELD SCRAMBLER v2.0 | FULL ALPHANUMERIC ROTATION</div>
+    <div class="mode-badge">SCRAMBLE / UNSCRAMBLE :: LETTERS (A-Z,a-z) + DIGITS (0-9)</div>
+  </div>
+
+  <div class="control-grid">
+    <div class="shift-module">
+      <div class="param-label">SCRAMBLE KEY [INTEGER]</div>
+      <div class="shift-entry">
+        <input type="number" id="shiftKeyField" value="7" placeholder="shift value">
+      </div>
+      <div class="shift-hint">positive / negative / zero | letters mod 26 | digits mod 10</div>
+    </div>
+
+    <div class="action-module">
+      <button id="encryptActionBtn" class="action-btn primary">SCRAMBLE TEXT</button>
+      <button id="decryptActionBtn" class="action-btn">UNSCRAMBLE TEXT</button>
+    </div>
+  </div>
+
+  <div class="io-panel">
+    <div class="field-group">
+      <div class="field-label">INPUT BUFFER</div>
+      <textarea id="plainInput" class="field-input" rows="4" placeholder="TARGET TEXT ...&#10;LETTERS A-Z a-z WILL BE SHIFTED (MOD 26)&#10;NUMBERS 0-9 WILL BE SHIFTED (MOD 10)&#10;ALL OTHER CHARACTERS REMAIN UNCHANGED"></textarea>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">OUTPUT BUFFER [SCRAMBLED / RESTORED]</div>
+      <div id="resultOutput" class="result-display">-- AWAIT INSTRUCTION --</div>
+    </div>
+  </div>
+
+  <div class="cipher-specs">
+    <div class="spec-item">ALPHABET SHIFT: CAESAR ROTATION (MOD 26) | CASE PRESERVED</div>
+    <div class="spec-item">NUMERIC SCRAMBLE: CYCLIC SHIFT (MOD 10) — DIGIT ROTATION</div>
+    <div class="spec-item">SYMMETRIC KEY: SAME KEY SCRAMBLES & UNSCRAMBLES</div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const shiftInput = document.getElementById('shiftKeyField');
+    const inputTextarea = document.getElementById('plainInput');
+    const outputDiv = document.getElementById('resultOutput');
+    const scrambleBtn = document.getElementById('encryptActionBtn');
+    const unscrambleBtn = document.getElementById('decryptActionBtn');
+
+    // Helper: get current shift integer from text field
+    function getCurrentShift() {
+      let raw = shiftInput.value.trim();
+      if (raw === "") return 0;
+      let num = Number(raw);
+      if (isNaN(num)) return 0;
+      if (!Number.isInteger(num)) {
+        num = Math.trunc(num);
+      }
+      return num;
+    }
+
+    function setShiftValue(val) {
+      shiftInput.value = val;
+    }
+
+    // ----- CORE SCRAMBLE ENGINE: LETTERS (A-Z,a-z) + DIGITS (0-9) -----
+    
+    // shift a single letter (A-Z or a-z) using modulo 26
+    function shiftLetter(letterChar, shiftAmount) {
+      const code = letterChar.charCodeAt(0);
+      if (code >= 65 && code <= 90) { // A-Z
+        const base = 65;
+        const effective = ((shiftAmount % 26) + 26) % 26;
+        const newCode = base + (code - base + effective) % 26;
+        return String.fromCharCode(newCode);
+      } else if (code >= 97 && code <= 122) { // a-z
+        const base = 97;
+        const effective = ((shiftAmount % 26) + 26) % 26;
+        const newCode = base + (code - base + effective) % 26;
+        return String.fromCharCode(newCode);
+      }
+      return letterChar; // fallback (should not happen if called only for letters)
+    }
+    
+    // shift a single digit character (0-9) using modulo 10
+    function shiftDigit(digitChar, shiftAmount) {
+      const code = digitChar.charCodeAt(0);
+      if (code < 48 || code > 57) return digitChar;
+      const digitVal = code - 48;
+      const effective = ((shiftAmount % 10) + 10) % 10;
+      const newVal = (digitVal + effective) % 10;
+      return String.fromCharCode(48 + newVal);
+    }
+    
+    // Transform text: apply rotation to letters (A-Z,a-z) AND digits (0-9)
+    // isScrambleMode = true  -> apply forward shift (encrypt)
+    // isScrambleMode = false -> apply reverse shift (decrypt = -shift)
+    function transformAlphanumeric(text, shiftKey, isScrambleMode) {
+      if (!text) return "";
+      let effectiveShift = shiftKey;
+      if (!isScrambleMode) {
+        // unscramble: reverse the rotation for both letters and digits
+        effectiveShift = -shiftKey;
+      }
+      
+      let result = "";
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const isLetter = (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
+        const isDigit = (ch >= '0' && ch <= '9');
+        
+        if (isLetter) {
+          result += shiftLetter(ch, effectiveShift);
+        } else if (isDigit) {
+          result += shiftDigit(ch, effectiveShift);
+        } else {
+          result += ch;
+        }
+      }
+      return result;
+    }
+    
+    // Main execution handler
+    function executeScrambler(mode) {
+      const rawText = inputTextarea.value;
+      if (rawText === undefined || rawText === null) {
+        outputDiv.innerText = "[ERROR] NO INPUT";
+        return;
+      }
+      let shift = getCurrentShift();
+      if (isNaN(shift)) shift = 0;
+      
+      let outputText = "";
+      try {
+        if (mode === 'scramble') {
+          outputText = transformAlphanumeric(rawText, shift, true);
+        } else { // unscramble
+          outputText = transformAlphanumeric(rawText, shift, false);
+        }
+      } catch (err) {
+        outputText = "[PROCESSING ERROR] " + err;
+      }
+      
+      if (outputText === "") outputText = "(empty output)";
+      outputDiv.innerText = outputText;
+    }
+    
+    // Event handlers for shift key field
+    shiftInput.addEventListener('change', function() {
+      let val = getCurrentShift();
+      setShiftValue(val);
+    });
+    shiftInput.addEventListener('blur', function() {
+      let val = getCurrentShift();
+      setShiftValue(val);
+    });
+    
+    // Button actions
+    scrambleBtn.addEventListener('click', () => {
+      executeScrambler('scramble');
+    });
+    unscrambleBtn.addEventListener('click', () => {
+      executeScrambler('unscramble');
+    });
+    
+    // set default example content (clean military style, includes letters + numbers)
+    if (inputTextarea.value === "") {
+      inputTextarea.value = "Type text here";
+    }
+    // initial output placeholder
+    outputDiv.innerText = "-- READY FOR ALPHANUMERIC SCRAMBLE --";
+    
+    // Optional: small console log for verification (no visual impact)
+    console.log("Field scrambler active | letters (mod26) + digits (mod10)");
+  })();
+</script>
+</body>
+</html>
